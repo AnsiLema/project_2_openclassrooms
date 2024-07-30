@@ -56,3 +56,6 @@ with open(csv_file, 'w', newline='', encoding='utf-8') as file:
     writer.writerow(book_info)
 
 print(f"Les informations du livre ont été écrites dans le fichier {csv_file}.")
+
+# Extraction des données de toute une catégorie de livre
+
