@@ -78,7 +78,7 @@ def extract_book_url(soup, base_url):
     return book_url
 
 
-book_urls = extract_book_url(soup, base_url)
+
 
 
 
