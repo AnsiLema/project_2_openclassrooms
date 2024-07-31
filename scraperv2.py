@@ -7,16 +7,6 @@ url = "https://books.toscrape.com/catalogue/do-androids-dream-of-electric-sheep-
 page = requests.get(url)
 soup = BeautifulSoup(page.text, "html.parser")
 
-# URL de la page produit à scraper
-# product_page_url = "https://books.toscrape.com/catalogue/do-androids-dream-of-electric-sheep-blade-runner-1_149/index.html"
-
-# Envoyer une requête GET à la page produit
-page = requests.get(url)
-# response.raise_for_status()
-
-# Analyser le contenu HTML avec BeautifulSoup
-soup = BeautifulSoup(page.text, "html.parser")
-
 # Extraire les informations demandées
 def extract_book_info(soup, url):
     upc = soup.find("th", string='UPC').find_next_sibling("td").string
@@ -30,16 +20,17 @@ def extract_book_info(soup, url):
     product_description = soup.find('meta', {'name': 'description'})['content'].strip()
     category = soup.find('ul', {'class': 'breadcrumb'}).find_all('li')[2].text.strip()
     star_number = {
-        "One": "1",
-        "Two": "2",
-        "Three": "3",
-        "Four": "4",
-        "Five": "5"
+        "One": 1,
+        "Two": 2,
+        "Three": 3,
+        "Four": 4,
+        "Five": 5
     }
     review_rating = soup.find('p', {'class': 'star-rating'})['class'][1]
     if review_rating in star_number:
         review_rating = star_number[review_rating]
-        print(review_rating)
+    else:
+        review_rating = 0
     image_url = soup.find('img')['src']
     image_url = 'http://books.toscrape.com' + image_url.replace('../..', '')
 
@@ -69,5 +60,30 @@ with open(csv_file, 'w', newline='', encoding='utf-8') as file:
 
 print(f"Les informations du livre ont été écrites dans le fichier {csv_file}.")
 
-# Extraction des données de toute une catégorie de livre
+
+#Extraction de tout les livres d'une catégorie
+base_url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
+page = requests.get(base_url)
+soup = BeautifulSoup(page.text, "html.parser")
+
+#Extraire les URL de chaque livre d'une categorie
+def extract_book_url(soup, base_url):
+    book_elements = soup.find("ol", class_="row").find_all("h3")
+    book_url = []
+    for book_element in book_elements:
+        complement_url = book_element.find("a")["href"]
+        #ajout du début de l'URL pour avoir l'URL du livre
+        full_url = "https://books.toscrape.com/catalogue/" + complement_url.replace("../", "")
+        book_url.append(full_url)
+    return book_url
+
+
+book_urls = extract_book_url(soup, base_url)
+
+
+
+
+
+
+
 
