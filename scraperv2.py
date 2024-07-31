@@ -29,7 +29,17 @@ def extract_book_info(soup, url):
     unit_available = int(re.search(r"\d+", number_available).group())
     product_description = soup.find('meta', {'name': 'description'})['content'].strip()
     category = soup.find('ul', {'class': 'breadcrumb'}).find_all('li')[2].text.strip()
+    star_number = {
+        "One": "1",
+        "Two": "2",
+        "Three": "3",
+        "Four": "4",
+        "Five": "5"
+    }
     review_rating = soup.find('p', {'class': 'star-rating'})['class'][1]
+    if review_rating in star_number:
+        review_rating = star_number[review_rating]
+        print(review_rating)
     image_url = soup.find('img')['src']
     image_url = 'http://books.toscrape.com' + image_url.replace('../..', '')
 
