@@ -75,7 +75,14 @@ def extract_book_url(soup, base_url):
         #ajout du début de l'URL pour avoir l'URL du livre
         full_url = "https://books.toscrape.com/catalogue/" + complement_url.replace("../", "")
         book_url.append(full_url)
+
     return book_url
+
+#fonction si pour catégorie de plus de une page
+def extract_books _extra_pages(base_url):
+all_books_url =[]
+
+
 
 
 
