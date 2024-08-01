@@ -137,12 +137,12 @@ def extract_category_in_csv(category_url, book_info_csv):
             "universal_product_code (upc)",
             "title",
             "price_including_tax",
-            'price_excluding_tax',
-            'number_available',
-            'product_description',
-            'category',
-            'review_rating',
-            'image_url'
+            "price_excluding_tax",
+            "number_available",
+            "product_description",
+            "category",
+            "review_rating",
+            "image_url"
         ])
         writer.writeheader()
         for book_url in book_urls:
@@ -159,4 +159,21 @@ csv_file = "mystery_books.csv"
 
 # Extraire toutes les informations des livres de la catégorie et les enregistrer dans un fichier CSV
 extract_category_in_csv(category_url, csv_file)
+
+# Extraction des données de tout les livres du site par catégorie.
+
+master_url = "https://books.toscrape.com/catalogue/category/books_1/index.html"
+page = requests.get(master_url)
+soup = BeautifulSoup(page.text, "html.parser")
+
+
+def extract_all_website(master_url):
+    all_categories_urls = []
+    category_elements = soup.find("ul", class_="nav nav-list").find_all("ul")
+    category_links = category_elements.find_all("a")
+
+    for links in category_links:
+        category_url = urljoin(master_url, links["href"])
+        all_categories_urls.append(category_url)
+       print(all_category_urls)
 
