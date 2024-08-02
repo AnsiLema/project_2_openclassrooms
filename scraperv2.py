@@ -19,8 +19,8 @@ def extract_book_info(soup, url):
     price_excluding_tax_wo_symbol = price_excluding_tax.replace("Â£", "£")
     number_available = soup.find("th", string="Availability").find_next_sibling("td").string
     unit_available = int(re.search(r"\d+", number_available).group())
-    product_description = soup.find("meta", {"name": "description"})["content"].strip()
-    category = soup.find("ul", {"class": "breadcrumb"}).find_all("li")[2].text.strip()
+    product_description = soup.find("meta", name_="description")["content"].strip()
+    category = soup.find("ul", class_="breadcrumb").find_all("li")[2].text.strip()
     star_number = {
         "One": 1,
         "Two": 2,
@@ -51,7 +51,6 @@ def extract_book_info(soup, url):
 
 # Extraire les informations du livre
 book_info = extract_book_info(soup, url)
-print(book_info)
 
 # # Écrire les informations dans un fichier CSV
 csv_file = 'book_info.csv'
@@ -125,7 +124,6 @@ category_url = "https://books.toscrape.com/catalogue/category/books/mystery_3/in
 # Extraire toutes les URLs de livres de la catégorie
 book_urls = extract_all_books_in_category(category_url)
 print(f"Nombre de livres extraits: {len(book_urls)}")
-print(book_urls)
 
 # Fonction pour extraire les données de tout les livres d'une catégorie
 def extract_category_in_csv(category_url, book_info_csv):
@@ -162,18 +160,35 @@ extract_category_in_csv(category_url, csv_file)
 
 # Extraction des données de tout les livres du site par catégorie.
 
-master_url = "https://books.toscrape.com/catalogue/category/books_1/index.html"
+master_url = "https://books.toscrape.com/index.html"
 page = requests.get(master_url)
 soup = BeautifulSoup(page.text, "html.parser")
 
+# Extraire tout les liens des catégories présentes sur le site
+book_categories = soup.find("ul", class_= "nav nav-list").find_all("a")
+book_categories_url = [category ["href"] for category in book_categories[1:]]
 
-def extract_all_website(master_url):
-    all_categories_urls = []
-    category_elements = soup.find("ul", class_="nav nav-list").find_all("ul")
-    category_links = category_elements.find_all("a")
+# Transformer les URLs relatives en URLs absolues utilisables
+book_categorization_url =[]
 
-    for links in category_links:
-        category_url = urljoin(master_url, links["href"])
-        all_categories_urls.append(category_url)
-       print(all_category_urls)
+for book_category_url in book_categories_url:
+    full_url = urljoin(master_url, book_category_url)
+    book_categorization_url.append(full_url)
+
+print(f"Nombre de catégories trouvées: {len(book_categorization_url)}")
+
+# Extraire les données d'une catégorie et les enregistrer dans un fichier CSV distinct.
+for category_url in book_categorization_url:
+    extract_all_books_in_category(category_url)
+    category_part = category_url.split("/")[-2]
+    category_name = category_part.split("_")[0]
+    csv_filename = f"{category_name}.csv"
+    extract_category_in_csv(book_categorization_url, csv_filename)
+
+print(f"Nombre de livres extraits: {len(book_urls)}")
+print(category_name)
+
+
+
+
 
