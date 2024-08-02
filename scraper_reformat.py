@@ -75,7 +75,7 @@ def extract_book_info(soup, url):
         "Four": 4,
         "Five": 5
     }
-    review_rating = soup.find("p", {"class": "star-rating"})["class"][1]
+    review_rating = soup.find("p", class_="star-rating")["class"][1]
     if review_rating in star_number:
         review_rating = star_number[review_rating]
     else:
