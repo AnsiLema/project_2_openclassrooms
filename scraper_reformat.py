@@ -57,6 +57,9 @@ def extract_all_books_in_category(category_url):
     return all_book_urls
 
 
+# Fonction pour télécharger les images des livres
+
+
 # Fonction pour extraire les informations d'un livre
 def extract_book_info(soup, url):
     upc = soup.find("th", string="UPC").find_next_sibling("td").string
