@@ -4,9 +4,10 @@ from bs4 import BeautifulSoup
 import csv
 import re
 from urllib.parse import urljoin
+import os
 
 # URL de base du site
-base_url = "https://books.toscrape.com/"
+BASE_URL = "https://books.toscrape.com/"
 
 
 # Fonction pour obtenir le contenu HTML d'une page
@@ -22,7 +23,7 @@ def extract_category_urls(soup):
     category_links = category_section.find_all("a")
 
     for link in category_links:
-        category_url = urljoin(base_url, link['href'])
+        category_url = urljoin(BASE_URL, link['href'])
         category_urls.append(category_url)
 
     return category_urls
@@ -82,6 +83,7 @@ def extract_book_info(soup, url):
         review_rating = 0
     image_url = soup.find("img")["src"]
     image_url = "http://books.toscrape.com" + image_url.replace("../..", "")
+    image = soup.find()
 
     return {
         "product_page_url": url,
@@ -124,7 +126,7 @@ def extract_category_in_csv(category_url, csv_filename):
 
 
 # Extraire les URLs de toutes les catégories
-soup = get_soup(base_url)
+soup = get_soup(BASE_URL)
 category_urls = extract_category_urls(soup)
 
 # Scraper les données de chaque catégorie
@@ -133,7 +135,7 @@ for category_url in category_urls:
     csv_filename = f"{category_name}.csv"
     extract_category_in_csv(category_url, csv_filename)
 
-print("Scraping terminé ! Les fichiers CSV ont été créés pour chaque catégorie.")
+print(f"Les fichiers CSV ont été créés pour les {len(category_urls)} catégories.")
 
 
 
