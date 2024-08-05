@@ -1,13 +1,11 @@
-# Importation des bibliothèques nécessaires
 import requests
 from bs4 import BeautifulSoup
 import csv
 import re
 from urllib.parse import urljoin
-import os
 
 # URL de base du site
-BASE_URL = "https://books.toscrape.com/"
+base_url = "https://books.toscrape.com/"
 
 
 # Fonction pour obtenir le contenu HTML d'une page
@@ -23,7 +21,7 @@ def extract_category_urls(soup):
     category_links = category_section.find_all("a")
 
     for link in category_links:
-        category_url = urljoin(BASE_URL, link['href'])
+        category_url = urljoin(base_url, link['href'])
         category_urls.append(category_url)
 
     return category_urls
@@ -63,12 +61,12 @@ def extract_all_books_in_category(category_url):
 def extract_book_info(soup, url):
     upc = soup.find("th", string="UPC").find_next_sibling("td").string
     title = soup.find("h1").string
-    price_including_tax = soup.find("th", string="Price (incl. tax)").find_next_sibling("td").string[1:]  # afin d'exclure le signe avant £
-    price_excluding_tax = soup.find("th", string="Price (excl. tax)").find_next_sibling("td").string[1:]  # afin d'exclure le signe avant £
+    price_including_tax = soup.find("th", string="Price (incl. tax)").find_next_sibling("td").string
+    price_excluding_tax = soup.find("th", string="Price (excl. tax)").find_next_sibling("td").string
     number_available = soup.find("th", string="Availability").find_next_sibling("td").string
     unit_available = int(re.search(r"\d+", number_available).group())
-    product_description = soup.find("meta", name_= "description")["content"].strip()
-    category = soup.find("ul", class_="breadcrumb").find_all("li")[2].text.strip()
+    product_description = soup.find("meta", {"name": "description"})["content"].strip()
+    category = soup.find("ul", {"class": "breadcrumb"}).find_all("li")[2].text.strip()
     star_number = {
         "One": 1,
         "Two": 2,
@@ -76,21 +74,20 @@ def extract_book_info(soup, url):
         "Four": 4,
         "Five": 5
     }
-    review_rating = soup.find("p", class_="star-rating")["class"][1]
+    review_rating = soup.find("p", {"class": "star-rating"})["class"][1]
     if review_rating in star_number:
         review_rating = star_number[review_rating]
     else:
         review_rating = 0
     image_url = soup.find("img")["src"]
     image_url = "http://books.toscrape.com" + image_url.replace("../..", "")
-    image = soup.find()
 
     return {
         "product_page_url": url,
         "universal_product_code (upc)": upc,
         "title": title,
-        "price_including_tax": price_including_tax,
-        "price_excluding_tax": price_excluding_tax,
+        "price_including_tax": price_including_tax[1:],
+        "price_excluding_tax": price_excluding_tax[1:],
         "number_available": unit_available,
         "product_description": product_description,
         "category": category,
@@ -126,16 +123,17 @@ def extract_category_in_csv(category_url, csv_filename):
 
 
 # Extraire les URLs de toutes les catégories
-soup = get_soup(BASE_URL)
+soup = get_soup(base_url)
 category_urls = extract_category_urls(soup)
 
 # Scraper les données de chaque catégorie
 for category_url in category_urls:
-    category_name = category_url.split("/")[-2] # permet de donner le nom de la catégorie à l'aide de l'URL
+    category_name = category_url.split("/")[-2]
     csv_filename = f"{category_name}.csv"
     extract_category_in_csv(category_url, csv_filename)
 
-print(f"Les fichiers CSV ont été créés pour les {len(category_urls)} catégories.")
+print("Scraping terminé ! Les fichiers CSV ont été créés pour chaque catégorie.")
+
 
 
 
