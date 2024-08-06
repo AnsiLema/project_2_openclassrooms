@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 import re
 from urllib.parse import urljoin
+import os
 
 # URL de base du site
 base_url = "https://books.toscrape.com/"
@@ -59,9 +60,14 @@ def extract_all_books_in_category(category_url):
 
 # Fonction pour télécharger les images des livres
 
+def download_image(image_url, save_path):
+    response = requests.get(image_url)
+    with open(save_path, "wb") as f:
+        f.write(response.content)
+
 
 # Fonction pour extraire les informations d'un livre
-def extract_book_info(soup, url):
+def extract_book_info(soup, url, category_folder):
     upc = soup.find("th", string="UPC").find_next_sibling("td").string
     title = soup.find("h1").string
     price_including_tax = soup.find("th", string="Price (incl. tax)").find_next_sibling("td").string
@@ -84,6 +90,10 @@ def extract_book_info(soup, url):
         review_rating = 0
     image_url = soup.find("img")["src"]
     image_url = "http://books.toscrape.com" + image_url.replace("../..", "")
+    image_filename = f"{title}.jpeg"
+    image_path = os.path.join(category_folder, image_filename)
+    download_image(image_url, image_path)
+
 
     return {
         "product_page_url": url,
@@ -103,6 +113,11 @@ def extract_book_info(soup, url):
 def extract_category_in_csv(category_url, csv_filename):
     book_urls = extract_all_books_in_category(category_url)
 
+    # création du dossier pour la catégorie
+    category_name = csv_filename.replace(".csv", "")
+    category_folder = os.path.join("images", category_name)
+    os.makedirs(category_folder, exist_ok=True)
+
     with open(csv_filename, "w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=[
             "product_page_url",
@@ -119,7 +134,7 @@ def extract_category_in_csv(category_url, csv_filename):
         writer.writeheader()
         for book_url in book_urls:
             soup = get_soup(book_url)
-            book_info = extract_book_info(soup, book_url)
+            book_info = extract_book_info(soup, book_url, category_folder) # fait passer le dossier de la catégorie
             writer.writerow(book_info)
 
     print(f"Les infos des livres de la catégorie ont été écrites dans le fichier {csv_filename}.")
