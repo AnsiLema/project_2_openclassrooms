@@ -25,8 +25,8 @@ def extract_category_urls(soup):
         category_url = urljoin(base_url, link['href'])
         category_urls.append(category_url)
 
+    print(f"{len(category_urls)} catégories différentes ont été trouvées!")
     return category_urls
-    print(f"{len(category_urls)} ont été trouvées!")
 
 # Fonction pour extraire les URLs des livres d'une page de catégorie
 def extract_book_urls(soup):
@@ -55,8 +55,8 @@ def extract_all_books_in_category(category_url):
         else:
             next_page = None
 
+    print(f"{len(all_book_urls)} livres ont été extraits de la catégorie {category_name}.")
     return all_book_urls
-    print(f"{len(all_book_urls)} ont été extraites de la catégorie.")
 
 # Fonction pour télécharger les images des livres
 
@@ -146,7 +146,7 @@ category_urls = extract_category_urls(soup)
 
 # Scraper les données de chaque catégorie
 for category_url in category_urls:
-    category_name = category_url.split("/")[-2]
+    category_name = category_url.split("/")[-2].split("_")[0]
     csv_filename = f"{category_name}.csv"
     extract_category_in_csv(category_url, csv_filename)
 
