@@ -26,7 +26,7 @@ def extract_category_urls(soup):
         category_urls.append(category_url)
 
     return category_urls
-
+    print(f"{len(category_urls)} ont été trouvées!")
 
 # Fonction pour extraire les URLs des livres d'une page de catégorie
 def extract_book_urls(soup):
@@ -56,7 +56,7 @@ def extract_all_books_in_category(category_url):
             next_page = None
 
     return all_book_urls
-
+    print(f"{len(all_book_urls)} ont été extraites de la catégorie.")
 
 # Fonction pour télécharger les images des livres
 
@@ -90,7 +90,7 @@ def extract_book_info(soup, url, category_folder):
         review_rating = 0
     image_url = soup.find("img")["src"]
     image_url = "http://books.toscrape.com" + image_url.replace("../..", "")
-    image_filename = f"{title}.jpeg"
+    image_filename = f"{title}.jpeg".replace("/", "")
     image_path = os.path.join(category_folder, image_filename)
     download_image(image_url, image_path)
 
