@@ -8,12 +8,10 @@ import os
 # URL de base du site
 base_url = "https://books.toscrape.com/"
 
-
 # Fonction pour obtenir le contenu HTML d'une page
 def get_soup(url):
     response = requests.get(url)
     return BeautifulSoup(response.text, "html.parser")
-
 
 # Fonction pour extraire les URLs des catégories
 def extract_category_urls(soup):
@@ -24,8 +22,6 @@ def extract_category_urls(soup):
     for link in category_links:
         category_url = urljoin(base_url, link['href'])
         category_urls.append(category_url)
-
-    print(f"{len(category_urls)} catégories différentes ont été trouvées!")
     return category_urls
 
 # Fonction pour extraire les URLs des livres d'une page de catégorie
@@ -37,7 +33,6 @@ def extract_book_urls(soup):
         full_url = urljoin("https://books.toscrape.com/catalogue/", relative_url.replace("../", ""))
         book_urls.append(full_url)
     return book_urls
-
 
 # Fonction pour gérer la pagination et extraire les URLs de tous les livres d'une catégorie
 def extract_all_books_in_category(category_url):
@@ -59,12 +54,10 @@ def extract_all_books_in_category(category_url):
     return all_book_urls
 
 # Fonction pour télécharger les images des livres
-
 def download_image(image_url, save_path):
     response = requests.get(image_url)
     with open(save_path, "wb") as f:
         f.write(response.content)
-
 
 # Fonction pour extraire les informations d'un livre
 def extract_book_info(soup, url, category_folder):
@@ -94,7 +87,7 @@ def extract_book_info(soup, url, category_folder):
     image_path = os.path.join(category_folder, image_filename)
     download_image(image_url, image_path)
 
-
+    print(f"Le livre {title} à bien été ajouté au fichier {csv_filename}.")
     return {
         "product_page_url": url,
         "universal_product_code (upc)": upc,
@@ -108,17 +101,20 @@ def extract_book_info(soup, url, category_folder):
         "image_url": image_url
     }
 
-
 # Fonction pour extraire toutes les données d'une catégorie et les enregistrer dans un fichier CSV
-def extract_category_in_csv(category_url, csv_filename):
+def extract_category_in_csv(category_url, csv_filename, csv_folder):
     book_urls = extract_all_books_in_category(category_url)
 
-    # création du dossier pour la catégorie
+    # Création du dossier pour la catégorie
     category_name = csv_filename.replace(".csv", "")
     category_folder = os.path.join("images", category_name)
     os.makedirs(category_folder, exist_ok=True)
 
-    with open(csv_filename, "w", newline="", encoding="utf-8") as file:
+    # Chemin complet du fichier CSV
+    csv_path = os.path.join(csv_folder, csv_filename)
+    os.makedirs(csv_folder, exist_ok=True)
+
+    with open(csv_path, "w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=[
             "product_page_url",
             "universal_product_code (upc)",
@@ -134,26 +130,24 @@ def extract_category_in_csv(category_url, csv_filename):
         writer.writeheader()
         for book_url in book_urls:
             soup = get_soup(book_url)
-            book_info = extract_book_info(soup, book_url, category_folder) # fait passer le dossier de la catégorie
+            book_info = extract_book_info(soup, book_url, category_folder)
             writer.writerow(book_info)
 
-    print(f"Les infos des livres de la catégorie ont été écrites dans le fichier {csv_filename}.")
-
+    print(f"Toutes les informations des livres ont été enregistrées dans le fichier {csv_filename}.")
+    print(f"Les images de la catégorie {category_name} ont été enregistrées vers images/{category_name}.")
 
 # Extraire les URLs de toutes les catégories
 soup = get_soup(base_url)
 category_urls = extract_category_urls(soup)
 
+# Créer un dossier pour les fichiers CSV
+csv_folder = "dossier csv"
+os.makedirs(csv_folder, exist_ok=True)
+
 # Scraper les données de chaque catégorie
 for category_url in category_urls:
     category_name = category_url.split("/")[-2].split("_")[0]
     csv_filename = f"{category_name}.csv"
-    extract_category_in_csv(category_url, csv_filename)
+    extract_category_in_csv(category_url, csv_filename, csv_folder)
 
-print("Scraping terminé ! Les fichiers CSV ont été créés pour chaque catégorie.")
-
-
-
-
-
-
+print("Scraping terminé ! Les données du site Books to Scrape ont été Extraites, Transformées et Sauvegardées.")
