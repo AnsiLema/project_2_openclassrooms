@@ -8,6 +8,10 @@ Ce projet est un script Python pour scraper les données du site [Books to Scrap
 
 ## Installation et Utilisation
 
+Les commandes suivantes vont être effectuées depuis votre terminal sous MacOs.
+
+Naviguez dans le repertoire depuis lequel vous voulez executer votre script et sauvegarder vos données, à laide des commandes cd (change directory) et mkdir (make directory)
+
 ### 1. Cloner le dépôt
 
 Clonez le dépôt contenant le script :
@@ -19,7 +23,6 @@ git clone https://github.com/AnsiLema/project_2_openclassrooms.git
 ### 2. Créer et activer un environnement virtuel
 
 Créez un environnement virtuel pour isoler les dépendances du projet
-Depuis votre terminal, entrez les commandes suivantes:
 
 ```
  python3 -m venv venv
@@ -60,5 +63,7 @@ Après l'exécution du script, vous trouverez :
 
 Assurez-vous d'avoir une connexion Internet active pendant l'exécution du script, car il télécharge les données en temps réel à partir du site Books to Scrape.
 Sans cela le script ne pourra fonctionner.
+
+# Bon scraping !
 
 A'nsi
