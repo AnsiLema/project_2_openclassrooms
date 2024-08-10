@@ -50,7 +50,7 @@ def extract_all_books_in_category(category_url):
         else:
             next_page = None
 
-    print(f"{len(all_book_urls)} livres ont été extraits de la catégorie {category_name}.")
+    print(f"{len(all_book_urls)} livres ont été trouvés dans la catégorie {category_name}.")
     return all_book_urls
 
 # Fonction pour télécharger les images des livres
@@ -87,7 +87,7 @@ def extract_book_info(soup, url, category_folder):
     image_path = os.path.join(category_folder, image_filename)
     download_image(image_url, image_path)
 
-    print(f"Le livre {title} à bien été ajouté au fichier {csv_filename}.")
+    print(f"Le livre '{title}' a été ajouté au fichier {csv_filename}.")
     return {
         "product_page_url": url,
         "universal_product_code (upc)": upc,
