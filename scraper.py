@@ -8,23 +8,23 @@ import os
 # URL de base du site
 base_url = "https://books.toscrape.com/"
 
-# Fonction pour obtenir le contenu HTML d'une page
+# Obtenir le contenu HTML d'une page
 def get_soup(url):
     response = requests.get(url)
     return BeautifulSoup(response.text, "html.parser")
 
-# Fonction pour extraire les URLs des catégories
+# Extraire les URLs des catégories en créant une liste
 def extract_category_urls(soup):
     category_urls = []
     category_section = soup.find("ul", class_="nav-list").find("ul")
     category_links = category_section.find_all("a")
 
     for link in category_links:
-        category_url = urljoin(base_url, link['href'])
+        category_url = urljoin(base_url, link["href"])
         category_urls.append(category_url)
     return category_urls
 
-# Fonction pour extraire les URLs des livres d'une page de catégorie
+# Extraire les URLs des livres d'une page de catégorie en créant une liste
 def extract_book_urls(soup):
     book_elements = soup.find("ol", class_="row").find_all("h3")
     book_urls = []
@@ -34,7 +34,7 @@ def extract_book_urls(soup):
         book_urls.append(full_url)
     return book_urls
 
-# Fonction pour gérer la pagination et extraire les URLs de tous les livres d'une catégorie
+# Gérer les pages et extraire les URLs de tous les livres d'une catégorie
 def extract_all_books_in_category(category_url):
     all_book_urls = []
     next_page = category_url
@@ -53,13 +53,13 @@ def extract_all_books_in_category(category_url):
     print(f"{len(all_book_urls)} livres ont été trouvés dans la catégorie {category_name}.")
     return all_book_urls
 
-# Fonction pour télécharger les images des livres
+# Télécharger les images des livres
 def download_image(image_url, save_path):
     response = requests.get(image_url)
     with open(save_path, "wb") as f:
         f.write(response.content)
 
-# Fonction pour extraire les informations d'un livre
+# Extraire les informations d'un livre en créant un dictionnaire
 def extract_book_info(soup, url, category_folder):
     upc = soup.find("th", string="UPC").find_next_sibling("td").string
     title = soup.find("h1").string
