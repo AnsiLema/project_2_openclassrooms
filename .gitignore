@@ -1,3 +1,4 @@
-/env
-*.csv
-*.jpeg
+venv/
+images/
+dossier csv/
+
