@@ -33,7 +33,7 @@ Créez un environnement virtuel pour isoler les dépendances du projet
 ```
  python3 -m venv venv
  ```
-puis:
+puis, activez-le avec la commmande suivante:
 
 ````
 source venv/bin/activate
