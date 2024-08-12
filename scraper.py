@@ -72,7 +72,7 @@ def extract_book_info(soup, url, category_folder):
     price_including_tax = soup.find("th", string="Price (incl. tax)").find_next_sibling("td").string
     price_excluding_tax = soup.find("th", string="Price (excl. tax)").find_next_sibling("td").string
     number_available = soup.find("th", string="Availability").find_next_sibling("td").string
-    unit_available = int(re.search(r"\d+", number_available).group())
+    unit_available = int(re.search(r"\d+", number_available).group()) # Convertit la chaine de caractère en entier
     product_description = soup.find("meta", {"name": "description"})["content"].strip()
     category = soup.find("ul", {"class": "breadcrumb"}).find_all("li")[2].text.strip()
     star_number = {
@@ -89,7 +89,7 @@ def extract_book_info(soup, url, category_folder):
         review_rating = 0
     image_url = soup.find("img")["src"]
     image_url = "http://books.toscrape.com" + image_url.replace("../..", "")
-    image_filename = f"{title}.jpeg".replace("/", "")
+    image_filename = f"{title}.jpeg".replace("/", "") # En cas de titre ayant "/" dans le titre
     image_path = os.path.join(category_folder, image_filename)
     download_image(image_url, image_path)
 
