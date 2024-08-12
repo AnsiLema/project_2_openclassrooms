@@ -8,12 +8,14 @@ import os
 # URL de base du site
 base_url = "https://books.toscrape.com/"
 
-# Obtenir le contenu HTML d'une page
+
+# Fonction pour obtenir le contenu HTML d'une page
 def get_soup(url):
     response = requests.get(url)
     return BeautifulSoup(response.text, "html.parser")
 
-# Extraire les URLs des catégories en créant une liste
+
+# Fonction pour extraire les URLs des catégories en créant une liste
 def extract_category_urls(soup):
     category_urls = []
     category_section = soup.find("ul", class_="nav-list").find("ul")
@@ -24,7 +26,8 @@ def extract_category_urls(soup):
         category_urls.append(category_url)
     return category_urls
 
-# Extraire les URLs des livres d'une page de catégorie en créant une liste
+
+# Fonction pour extraire les URLs des livres d'une page de catégorie en créant une liste
 def extract_book_urls(soup):
     book_elements = soup.find("ol", class_="row").find_all("h3")
     book_urls = []
@@ -34,7 +37,8 @@ def extract_book_urls(soup):
         book_urls.append(full_url)
     return book_urls
 
-# Gérer les pages et extraire les URLs de tous les livres d'une catégorie
+
+# Fonction pour gérer les pages et extraire les URLs de tous les livres d'une catégorie
 def extract_all_books_in_category(category_url):
     all_book_urls = []
     next_page = category_url
@@ -53,13 +57,15 @@ def extract_all_books_in_category(category_url):
     print(f"{len(all_book_urls)} livres ont été trouvés dans la catégorie {category_name}.")
     return all_book_urls
 
-# Télécharger les images des livres
+
+# Fonction pour télécharger les images des livres
 def download_image(image_url, save_path):
     response = requests.get(image_url)
     with open(save_path, "wb") as f:
         f.write(response.content)
 
-# Extraire les informations d'un livre en créant un dictionnaire
+
+# Fonction pour extraire les informations d'un livre en créant un dictionnaire
 def extract_book_info(soup, url, category_folder):
     upc = soup.find("th", string="UPC").find_next_sibling("td").string
     title = soup.find("h1").string
@@ -101,6 +107,7 @@ def extract_book_info(soup, url, category_folder):
         "image_url": image_url
     }
 
+
 # Fonction pour extraire toutes les données d'une catégorie et les enregistrer dans un fichier CSV
 def extract_category_in_csv(category_url, csv_filename, csv_folder):
     book_urls = extract_all_books_in_category(category_url)
@@ -135,6 +142,7 @@ def extract_category_in_csv(category_url, csv_filename, csv_folder):
 
     print(f"Toutes les informations des livres ont été enregistrées dans le fichier {csv_filename}.")
     print(f"Les images de la catégorie {category_name} ont été enregistrées vers images/{category_name}.")
+
 
 # Extraire les URLs de toutes les catégories
 soup = get_soup(base_url)
