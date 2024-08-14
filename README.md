@@ -27,18 +27,26 @@ Déplacez-vous dans le dossier que vous venez de cloner:
 cd project_2_openclassrooms
 ```
 
-Créez un environnement virtuel pour isoler les dépendances du projet
+Créez un environnement virtuel pour isoler les dépendances du projet.
+Attention, les commandes à entrer dépendent de votre système d'exploitation.
 
-
+Sur MacOs et Linux, entrez la commande: 
 ```
  python3 -m venv venv
  ```
-puis, activez-le avec la commmande suivante:
+puis, activez l'environnement virtuel avec la commmande suivante:
 
 ````
 source venv/bin/activate
 ````
-
+Sur Windows, entrez la commande:
+```
+python -m venv venv
+```
+puis, pour l'activation:
+```
+env\Script\activate.bat
+```
 ### 3. Installer les dépendances
 
 ````
