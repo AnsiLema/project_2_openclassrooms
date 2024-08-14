@@ -32,7 +32,7 @@ Attention, les commandes à entrer dépendent de votre système d'exploitation.
 
 Sur MacOs et Linux, entrez la commande: 
 ```
- python3 -m venv venv
+python3 -m venv venv
  ```
 puis, activez l'environnement virtuel avec la commmande suivante:
 
